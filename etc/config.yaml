@@ -1,0 +1,10 @@
+# Choice of environment
+env_mode: "basic"
+
+# Range of kmer use
+kmer:
+  begin: 13
+  end: 21
+  step: 2
+
+

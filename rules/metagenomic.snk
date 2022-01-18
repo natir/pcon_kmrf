@@ -1,0 +1,2 @@
+# Perform reads clustering based on estimate coverage from kmer count
+# Use kmer of a reference to select reads contains this kmer

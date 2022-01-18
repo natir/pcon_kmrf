@@ -1,0 +1,11 @@
+include: "utils.snk"
+
+include: "data.snk"
+
+include: "assembly.snk"
+
+include: "genotyping.snk"
+
+include: "metagenomic.snk"
+
+include: "chimera.snk"

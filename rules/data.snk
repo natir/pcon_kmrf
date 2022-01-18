@@ -1,0 +1,27 @@
+# Download dataset used by pipeline
+
+# reference
+rule k_12_MG1655_reference:
+    input:
+        # nothing
+
+    output:
+        "data/bacteria/reference.fasta",
+
+    log:
+        "log/data/bacteria_reference.txt"
+
+    conda:
+        f"../env/{config['env_mode']}/seqtk.yaml"
+        
+    shell:
+        "curl ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/005/845/GCF_000005845.2_ASM584v2/GCF_000005845.2_ASM584v2_genomic.fna.gz 2>> {log} | seqtk seq -A - 2>> {log} | sed -e 's/^\(>[^[:space:]]*\).*/\1/' > {output} 2>> {log}"
+
+
+# reads
+rule bacteria_reads:
+    input:
+        # nothing
+
+
+all_dependency.extend(rules.k_12_MG1655_reference.output)
