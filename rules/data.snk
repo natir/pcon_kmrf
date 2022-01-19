@@ -1,16 +1,19 @@
 # Download dataset used by pipeline
 
 # reference
-rule k_12_MG1655_reference:
+rule k12_MG1655_reference:
     input:
         # nothing
 
     output:
-        "data/bacteria/reference.fasta",
+        "data/references/k12_mg1655.fasta",
 
     log:
-        "log/data/bacteria_reference.txt"
+        "log/data/references/k12_mg1655.txt"
 
+    benchmark:
+        "profile/data/references/k12_mg1655.tsv"
+        
     conda:
         f"../env/{config['env_mode']}/seqtk.yaml"
         
@@ -18,10 +21,89 @@ rule k_12_MG1655_reference:
         "curl ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/005/845/GCF_000005845.2_ASM584v2/GCF_000005845.2_ASM584v2_genomic.fna.gz 2>> {log} | seqtk seq -A - 2>> {log} | sed -e 's/^\(>[^[:space:]]*\).*/\1/' > {output} 2>> {log}"
 
 
-# reads
-rule bacteria_reads:
+rule s_cerevisiae_imx2538_reference:
     input:
         # nothing
 
+    output:
+        "data/references/s_cerevisiae_imx2538.fasta"
 
-all_dependency.extend(rules.k_12_MG1655_reference.output)
+    log:
+        "log/data/references/s_cerevisiae_imx2538.txt"
+
+    benchmark:
+        "profile/data/references/s_cerevisiae_imx2538.tsv"
+
+    conda:
+        f"../env/{config['env_mode']}/seqtk.yaml"
+
+    shell:
+        "touch {output}"
+
+        
+# reads
+rule k12_MG1655_reads:
+    input:
+        # nothing
+
+    output:
+        "data/reads/k12_mg1655.fasta",
+
+    log:
+        "log/data/reads/k12_mg1655.txt"
+        
+    benchmark:
+        "profile/data/reads/k12_mg1655.txt"
+        
+    conda:
+        f"../env/{config['env_mode']}/seqtk.yaml"
+
+    shell:
+        "touch {output}"
+
+
+rule s_cerevisiae_imx2538_nanopore_reads:
+    input:
+        # nothing
+
+    output:
+        "data/reads/s_cerevisiae_imx2538_nanopore.fasta"
+
+    log:
+        "log/data/reads/s_cerevisiae_imx2538_nanopore.txt"
+
+    benchmark:
+        "profile/data/reads/s_cerevisiae_imx2538_nanopore.tsv"
+
+    conda:
+        f"../env/{config['env_mode']}/seqtk.yaml"
+    
+    shell:
+        "curl https://sra-download.ncbi.nlm.nih.gov/traces/sra72/SRR/015231/SRR15597407 2> {log} | seqtk seq -A - 2>> {log} > {output} 2>> {log}"
+
+
+rule s_cerevisiae_imx2538_illumina_reads:
+    input:
+        # nothing
+
+    output:
+        "data/reads/s_cerevisiae_imx2538_illumina.fasta"
+
+    log:
+        "log/data/reads/s_cerevisiae_imx2538_illumina.txt"
+
+    benchmark:
+        "profile/data/reads/s_cerevisiae_imx2538_illumina.tsv"
+
+    conda:
+        f"../env/{config['env_mode']}/seqtk.yaml"
+    
+    shell:
+        "curl https://sra-download.ncbi.nlm.nih.gov/traces/sra52/SRR/015231/SRR15597408 2> {log} | seqtk seq -A - 2>> {log} > {output} 2>> {log}"
+
+
+all_dependency.extend(rules.k12_MG1655_reference.output)
+all_dependency.extend(rules.s_cerevisiae_imx2538_reference.output)
+# all_dependency.extend(rules.k12_MG1655_reads.output)
+# all_dependency.extend(rules.s_cerevisiae_imx2538_nanopore_reads.output)
+# all_dependency.extend(rules.s_cerevisiae_imx2538_illumina_reads.output)
