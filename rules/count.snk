@@ -1,0 +1,26 @@
+rule pcon:
+    input:
+        "data/reads/{filename}.fasta"
+
+    output:
+        "count/pcon/reads/k{kmer_size}/{filename}.pcon"
+
+    log:
+        "log/pcon/count/reads/{filename}_k{kmer_size}.txt"
+
+    benchmark:
+        "profile/pcon/count/reads/{filename}_k{kmer_size}.tsv"
+
+    conda:
+        f"../env/{config['env_mode']}/pcon.yaml"
+
+    threads:
+        8
+        
+    shell:
+        "pcon count -i {input} -o {output} -k {wildcards.kmer_size} -t {threads}"
+
+
+all_dependency.append("count/reads/k15/k12_mg1655.pcon")
+all_dependency.append("count/reads/k15/s_cerevisiae_imx2538_nanopore.pcon")
+all_dependency.append("count/reads/k15/s_cerevisiae_imx2538_illumina.pcon")

@@ -2,6 +2,8 @@ include: "utils.snk"
 
 include: "data.snk"
 
+include: "count.snk"
+
 include: "assembly.snk"
 
 include: "genotyping.snk"
