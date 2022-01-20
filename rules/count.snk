@@ -2,7 +2,6 @@ rule pcon:
     input:
         "data/{origin}/{filename}.fasta"
 
-
     output:
         "count/k{kmer_size}/{origin}/pcon/{filename}.pcon"
 

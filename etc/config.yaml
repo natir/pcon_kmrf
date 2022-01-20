@@ -10,5 +10,24 @@ kmer_size:
   end: 19
   step: 2
 
+# Filter reads with solid kmer ratio lower than this range of ratio
+kmrf_ratio:
+  begin: 70
+  end: 100
+  step: 5
+
+filtlong_quality:
+  begin: 90
+  end: 100
+  step: 2
+
+reads2ref:
+  k12_mg1655: "k12_mg1655"
+  s_cerevisiae_imx2538_nanopore: "s_cerevisiae_imx2538"
+  s_cerevisiae_imx2538_illumina: "s_cerevisiae_imx2538"
+  zymo_nanopore: "zymo"
+  zymo_pacbio: "zymo"
+  zymo_illumina: "zymo"
+
 # counter enabled with extension
 counter: [["pcon", "pcon"], ["kmc", "kmc_suf"], ["jellyfish", "jf"]]

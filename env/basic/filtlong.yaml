@@ -1,0 +1,8 @@
+name: filtlong
+
+channels:
+  - bioconda
+  - defaults
+
+dependencies:
+  - filtlong = 0.2

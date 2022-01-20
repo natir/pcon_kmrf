@@ -1,1 +1,71 @@
 # Demonstrate filtration reads with less solid kmer improve and speed up assembly
+
+rule kmrf:
+    input:
+        "data/reads/{filename}.fasta"
+
+    output:
+        "filter/kmrf/{filename}_k{kmer_size}_r{ratio}.fasta"
+
+    log:
+        "log/filter/kmrf/{filename}_k{kmer_size}_r{ratio}.txt"
+
+    benchmark:
+        "profile/filter/kmrf/{filename}_k{kmer_size}_r{ratio}.tsv"
+
+    threads:
+        config['max_threads']
+
+    # conda:
+    #     f"../env/{config['env_mode']}/kmrf.yaml"
+
+    resources:
+        mem_mb = lambda wcd: pcon_memory_usage(int(wcd.kmer_size))
+
+    shell:
+        "kmrf -vvvv -t {threads} -i {input} -o {output} -r 0.{wildcards.ratio} -k {wildcards.kmer_size}  > {log}"
+
+
+
+rule filtlong:
+    input:
+        reads = "data/reads/{filename}.fasta",
+        ref = lambda wcd: f"data/references/{config['reads2ref'][wcd.filename]}.fasta"
+
+    output:
+        "filter/filtlong/{filename}_q{quality}.fasta"
+
+    log:
+        "log/filter/filtlong/{filename}_q{quality}.txt"
+
+    benchmark:
+        "profile/filter/filtlong/{filename}_q{quality}.tsv"
+
+    threads:
+        config['max_threads']
+
+    conda:
+        f"../env/{config['env_mode']}/filtlong.yaml"
+
+    shell:
+        "filtlong --min_mean_q 0.{wildcards.quality} -a {input.ref} {input.reads} > {output} 2> {log}"
+
+
+for kmer_size in conf_range("kmer_size"):
+    for ratio in conf_range("kmrf_ratio"):
+        #all_dependency.append(f"filter/kmrf/k12_mg1655_k{kmer_size}_r{ratio}.fasta")
+        all_dependency.append(f"filter/kmrf/s_cerevisiae_imx2538_nanopore_k{kmer_size}_r{ratio}.fasta")
+        all_dependency.append(f"filter/kmrf/s_cerevisiae_imx2538_illumina_k{kmer_size}_r{ratio}.fasta")
+        all_dependency.append(f"filter/kmrf/zymo_illumina_k{kmer_size}_r{ratio}.fasta")
+        all_dependency.append(f"filter/kmrf/zymo_pacbio_k{kmer_size}_r{ratio}.fasta")
+        all_dependency.append(f"filter/kmrf/zymo_nanopore_k{kmer_size}_r{ratio}.fasta")
+
+
+for kmer_size in conf_range("kmer_size"):
+    for quality in conf_range("filtlong_quality"):
+        #all_dependency.append(f"filter/filtlong/k12_mg1655_q{quality}.fasta")
+        all_dependency.append(f"filter/filtlong/s_cerevisiae_imx2538_nanopore_q{quality}.fasta")
+        all_dependency.append(f"filter/filtlong/s_cerevisiae_imx2538_illumina_q{quality}.fasta")
+        all_dependency.append(f"filter/filtlong/zymo_illumina_q{quality}.fasta")
+        all_dependency.append(f"filter/filtlong/zymo_pacbio_q{quality}.fasta")
+        all_dependency.append(f"filter/filtlong/zymo_nanopore_q{quality}.fasta")
