@@ -15,13 +15,13 @@ rule pcon:
         config['max_threads']
 
     # conda:
-    #     f"../env/{config['env_mode']}/pcon.yaml"
+    #     f"../envs/{config['env_mode']}/pcon.yaml"
 
     resources:
         mem_mb = lambda wcd: pcon_memory_usage(int(wcd.kmer_size))
 
     shell:
-        "pcon -vvvv -t {threads} count -i {input} -o {output} -k {wildcards.kmer_size} 2> {log}"
+        "pcon -vvvv -t {threads} count -i {input} -o {output} -k {wildcards.kmer_size} &> {log}"
 
 
 rule kmc:
@@ -46,12 +46,12 @@ rule kmc:
         config['max_threads']
 
     conda:
-        f"../env/{config['env_mode']}/kmc.yaml"
+        f"../envs/{config['env_mode']}/kmc.yaml"
 
     shell:
         """
         mkdir -p {params.work_dir}
-        kmc -k{wildcards.kmer_size} -t{threads} -r -fa {input} {params.kmc_out} {params.work_dir} 2>&1 > {log}
+        kmc -k{wildcards.kmer_size} -t{threads} -r -fa {input} {params.kmc_out} {params.work_dir} &> {log}
         """
 
 
@@ -72,10 +72,10 @@ rule jellyfish:
         config['max_threads']
 
     conda:
-        f"../env/{config['env_mode']}/jellyfish.yaml"
+        f"../envs/{config['env_mode']}/jellyfish.yaml"
 
     shell:
-        "jellyfish count -m{wildcards.kmer_size} -t{threads} -s10G -C -o {output} {input} 2>&1 > {log}"
+        "jellyfish count -m{wildcards.kmer_size} -t{threads} -s10G -C -o {output} {input} &> {log}"
 
 
 for counter, extension in conf_range("counter"):

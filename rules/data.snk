@@ -15,7 +15,7 @@ rule k12_MG1655_reference:
         "profile/data/references/k12_mg1655.tsv"
 
     conda:
-        f"../env/{config['env_mode']}/seqtk.yaml"
+        f"../envs/{config['env_mode']}/seqtk.yaml"
 
     shell:
         "curl ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/005/845/GCF_000005845.2_ASM584v2/GCF_000005845.2_ASM584v2_genomic.fna.gz 2>> {log} | seqtk seq -A - 2>> {log} | sed -e 's/^\(>[^[:space:]]*\).*/\1/' > {output} 2>> {log}"
@@ -35,7 +35,7 @@ rule s_cerevisiae_imx2538_reference:
         "profile/data/references/s_cerevisiae_imx2538.tsv"
 
     conda:
-        f"../env/{config['env_mode']}/seqtk.yaml"
+        f"../envs/{config['env_mode']}/seqtk.yaml"
 
     shell:
         "touch {output}"
@@ -55,7 +55,7 @@ rule zymo_reference:
         "profile/data/references/zymo.tsv"
 
     conda:
-        f"../env/{config['env_mode']}/seqtk.yaml"
+        f"../envs/{config['env_mode']}/seqtk.yaml"
 
     shell:
         """
@@ -83,7 +83,7 @@ rule k12_MG1655_reads:
         "profile/data/reads/k12_mg1655.txt"
 
     conda:
-        f"../env/{config['env_mode']}/seqtk.yaml"
+        f"../envs/{config['env_mode']}/seqtk.yaml"
 
     shell:
         "touch {output}"
@@ -103,7 +103,7 @@ rule s_cerevisiae_imx2538_nanopore_reads:
         "profile/data/reads/s_cerevisiae_imx2538_nanopore.tsv"
 
     conda:
-        f"../env/{config['env_mode']}/seqtk.yaml"
+        f"../envs/{config['env_mode']}/seqtk.yaml"
 
     shell:
         "curl ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR155/007/SRR15597407/SRR15597407_1.fastq.gz 2> {log} | seqtk seq -A - 2>> {log} > {output} 2>> {log}"
@@ -123,7 +123,7 @@ rule s_cerevisiae_imx2538_illumina_reads:
         "profile/data/reads/s_cerevisiae_imx2538_illumina.tsv"
 
     conda:
-        f"../env/{config['env_mode']}/seqtk.yaml"
+        f"../envs/{config['env_mode']}/seqtk.yaml"
 
     shell:
         "curl ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR155/008/SRR15597408/SRR15597408_1.fastq.gz ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR155/008/SRR15597408/SRR15597408_2.fastq.gz 2> {log} | seqtk seq -A - 2>> {log} > {output} 2>> {log}"
@@ -143,7 +143,7 @@ rule zymo_illumina_reads:
         "profile/data/reads/zymo_illumina.tsv"
 
     conda:
-        f"../env/{config['env_mode']}/seqtk.yaml"
+        f"../envs/{config['env_mode']}/seqtk.yaml"
 
     shell:
         "curl ftp://ftp.sra.ebi.ac.uk/vol1/run/ERR725/ERR7255689/18100FL-15-01-05_S96_L002_R1_001.fastq.gz ftp://ftp.sra.ebi.ac.uk/vol1/run/ERR725/ERR7255689/18100FL-15-01-05_S96_L002_R2_001.fastq.gz 2> {log} | seqtk seq -A - 2>> {log} > {output} 2>> {log}"
@@ -163,7 +163,7 @@ rule zymo_pacbio_reads:
         "profile/data/reads/zymo_pacbio.tsv"
 
     conda:
-        f"../env/{config['env_mode']}/seqtk.yaml"
+        f"../envs/{config['env_mode']}/seqtk.yaml"
 
     shell:
         "curl ftp://ftp.sra.ebi.ac.uk/vol1/run/ERR728/ERR7287988/zymo_hmw_r104.fastq.gz 2> {log} | seqtk seq -A - 2>> {log} > {output} 2>> {log}"
@@ -183,7 +183,7 @@ rule zymo_nanopore_reads:
         "profile/data/reads/zymo_nanopore.tsv"
 
     conda:
-        f"../env/{config['env_mode']}/seqtk.yaml"
+        f"../envs/{config['env_mode']}/seqtk.yaml"
 
     shell:
         "curl ftp://ftp.sra.ebi.ac.uk/vol1/run/ERR728/ERR7287988/zymo_hmw_r104.fastq.gz 2> {log} | seqtk seq -A - 2>> {log} > {output} 2>> {log}"

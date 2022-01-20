@@ -16,11 +16,13 @@ kmrf_ratio:
   end: 100
   step: 5
 
+# Filter reads with quality lower than this range of quality
 filtlong_quality:
   begin: 90
   end: 100
   step: 2
 
+# Associate reads with correct reference
 reads2ref:
   k12_mg1655: "k12_mg1655"
   s_cerevisiae_imx2538_nanopore: "s_cerevisiae_imx2538"
@@ -28,6 +30,10 @@ reads2ref:
   zymo_nanopore: "zymo"
   zymo_pacbio: "zymo"
   zymo_illumina: "zymo"
+
+# Associate reference with genome size
+ref2size:
+  zymo: 41884608
 
 # counter enabled with extension
 counter: [["pcon", "pcon"], ["kmc", "kmc_suf"], ["jellyfish", "jf"]]

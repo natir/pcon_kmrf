@@ -2,70 +2,122 @@
 
 rule kmrf:
     input:
-        "data/reads/{filename}.fasta"
+        "data/reads/{dataset}.fasta",
 
     output:
-        "filter/kmrf/{filename}_k{kmer_size}_r{ratio}.fasta"
+        "assembly/kmrf/{dataset}-k{kmer_size}-r{ratio}.fasta",
 
     log:
-        "log/filter/kmrf/{filename}_k{kmer_size}_r{ratio}.txt"
+        "log/assembly/kmrf/{dataset}-k{kmer_size}-r{ratio}.txt",
 
     benchmark:
-        "profile/filter/kmrf/{filename}_k{kmer_size}_r{ratio}.tsv"
+        "profile/assembly/kmrf/{dataset}-k{kmer_size}-r{ratio}.tsv",
 
     threads:
-        config['max_threads']
+        config['max_threads'],
 
     # conda:
-    #     f"../env/{config['env_mode']}/kmrf.yaml"
+    #     f"../envs/{config['env_mode']}/kmrf.yaml",
 
     resources:
-        mem_mb = lambda wcd: pcon_memory_usage(int(wcd.kmer_size))
+        mem_mb = lambda wcd: pcon_memory_usage(int(wcd.kmer_size)),
 
     shell:
-        "kmrf -vvvv -t {threads} -i {input} -o {output} -r 0.{wildcards.ratio} -k {wildcards.kmer_size}  > {log}"
-
+        "kmrf -vvvv -t {threads} -i {input} -o {output} -r 0.{wildcards.ratio} -k {wildcards.kmer_size} &> {log}"
 
 
 rule filtlong:
     input:
-        reads = "data/reads/{filename}.fasta",
-        ref = lambda wcd: f"data/references/{config['reads2ref'][wcd.filename]}.fasta"
+        reads = "data/reads/{dataset}.fasta",
+        ref = lambda wcd: f"data/references/{config['reads2ref'][wcd.dataset]}.fasta",
 
     output:
-        "filter/filtlong/{filename}_q{quality}.fasta"
+        "assembly/filtlong/{dataset}-q{quality}.fasta",
 
     log:
-        "log/filter/filtlong/{filename}_q{quality}.txt"
+        "log/assembly/filtlong/{dataset}-q{quality}.txt",
 
     benchmark:
-        "profile/filter/filtlong/{filename}_q{quality}.tsv"
+        "profile/assembly/filtlong/{dataset}-q{quality}.tsv",
 
     threads:
-        config['max_threads']
+        config['max_threads'],
 
     conda:
-        f"../env/{config['env_mode']}/filtlong.yaml"
+        f"../envs/{config['env_mode']}/filtlong.yaml",
 
     shell:
         "filtlong --min_mean_q 0.{wildcards.quality} -a {input.ref} {input.reads} > {output} 2> {log}"
 
 
+rule readbean:
+    input:
+        "assembly/{filter}/{dataset}-{params}.fasta",
+
+    output:
+        "assembly/redbean/{filter}_{dataset}-{params}/dbg.raw.fa",
+
+    log:
+        "log/assembly/readbean/{filter}_{dataset}-{params}.txt",
+
+    benchmark:
+        "profile/assembly/readbean/{filter}_{dataset}-{params}.tsv",
+
+    params:
+        prefix = "assembly/redbean/{filter}_{dataset}-{params}/dbg",
+        genome_size = lambda wcd: config['ref2size'][config['reads2ref'][wcd.dataset]],
+
+    threads:
+        config['max_threads']
+
+    conda:
+        f"../envs/{config['env_mode']}/redbean.yaml"
+
+    shell:
+        """
+        wtdbg2 -x ont -g {params.genome_size} -i {input} -t {threads} -fo {params.prefix} &>  {log}
+        wtpoa-cns -t {threads} -i {params.prefix}.ctg.lay.gz -fo {output} &>> {log}
+        """
+
+
+rule quast_assembly:
+    input:
+        asm = "assembly/redbean/{filter}_{dataset}-{params}/dbg.raw.fa",
+        ref = lambda wcd: f"data/references/{config['reads2ref'][wcd.dataset]}.fasta",
+
+    output:
+        "assembly/quast/{filter}/{dataset}-{params}/report.txt"
+
+    log:
+        "log/assembly/quast/{filter}_{dataset}-{params}.txt",
+
+    params:
+        prefix = "assembly/quast/{filter}/{dataset}-{params}/",
+
+    threads:
+        config['max_threads'],
+
+    conda:
+        f"../envs/{config['env_mode']}/quast.yaml",
+
+    shell:
+        "quast --min-identity 80 -t {threads} -o {params.prefix} -r {input.ref} {input.asm} &> {log}"
+
+
 for kmer_size in conf_range("kmer_size"):
     for ratio in conf_range("kmrf_ratio"):
-        #all_dependency.append(f"filter/kmrf/k12_mg1655_k{kmer_size}_r{ratio}.fasta")
-        all_dependency.append(f"filter/kmrf/s_cerevisiae_imx2538_nanopore_k{kmer_size}_r{ratio}.fasta")
-        all_dependency.append(f"filter/kmrf/s_cerevisiae_imx2538_illumina_k{kmer_size}_r{ratio}.fasta")
-        all_dependency.append(f"filter/kmrf/zymo_illumina_k{kmer_size}_r{ratio}.fasta")
-        all_dependency.append(f"filter/kmrf/zymo_pacbio_k{kmer_size}_r{ratio}.fasta")
-        all_dependency.append(f"filter/kmrf/zymo_nanopore_k{kmer_size}_r{ratio}.fasta")
+        #all_dependency.append(f"assembly/quast/kmrf/k12_mg1655-k{kmer_size}-r{ratio}/report.txt")
+        #all_dependency.append(f"assembly/quast/kmrf/s_cerevisiae_imx2538_nanopore-k{kmer_size}-r{ratio}/report.txt")
+        #all_dependency.append(f"assembly/quast/kmrf/s_cerevisiae_imx2538_illumin-_k{kmer_size}-r{ratio}/report.txt")
+        all_dependency.append(f"assembly/quast/kmrf/zymo_illumina-k{kmer_size}-r{ratio}/report.txt")
+        all_dependency.append(f"assembly/quast/kmrf/zymo_pacbio-k{kmer_size}-r{ratio}/report.txt")
+        all_dependency.append(f"assembly/quast/kmrf/zymo_nanopore-k{kmer_size}-r{ratio}/report.txt")
 
 
-for kmer_size in conf_range("kmer_size"):
-    for quality in conf_range("filtlong_quality"):
-        #all_dependency.append(f"filter/filtlong/k12_mg1655_q{quality}.fasta")
-        all_dependency.append(f"filter/filtlong/s_cerevisiae_imx2538_nanopore_q{quality}.fasta")
-        all_dependency.append(f"filter/filtlong/s_cerevisiae_imx2538_illumina_q{quality}.fasta")
-        all_dependency.append(f"filter/filtlong/zymo_illumina_q{quality}.fasta")
-        all_dependency.append(f"filter/filtlong/zymo_pacbio_q{quality}.fasta")
-        all_dependency.append(f"filter/filtlong/zymo_nanopore_q{quality}.fasta")
+for quality in conf_range("filtlong_quality"):
+    #all_dependency.append(f"assembly/quast/filtlong/k12_mg1655-q{quality}/report.txt")
+    #all_dependency.append(f"assembly/quast/filtlong/s_cerevisiae_imx2538_nanopore-q{quality}/report.txt")
+    #all_dependency.append(f"assembly/quast/filtlong/s_cerevisiae_imx2538_illumina-q{quality}/report.txt")
+    all_dependency.append(f"assembly/quast/filtlong/zymo_illumina-q{quality}/report.txt")
+    all_dependency.append(f"assembly/quast/filtlong/zymo_pacbio-q{quality}/report.txt")
+    all_dependency.append(f"assembly/quast/filtlong/zymo_nanopore-q{quality}/report.txt")
