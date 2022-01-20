@@ -59,12 +59,12 @@ rule zymo_reference:
 
     shell:
         """
-        curl https://s3.amazonaws.com/zymo-files/BioPool/D6322.refseq.zip > zymo.zip
-        unzip zymo.zip
-        mkdir -p data/references/zymo
-        cat D6322.refseq/Genomes/*.fasta > data/references/zymo.fasta
-        rm -rf D6322.refseq
-        rm zymo.zip
+        curl https://s3.amazonaws.com/zymo-files/BioPool/D6322.refseq.zip > zymo.zip 2> {log}
+        unzip zymo.zip &>> {log}
+        mkdir -p data/references/zymo &>> {log}
+        seqtk seq -A - D6322.refseq/Genomes/*.fasta > data/references/zymo.fasta 2>> {log}
+        rm -rf D6322.refseq 2>> {log}
+        rm zymo.zip 2>> {log}
         """
 
 
@@ -106,7 +106,7 @@ rule s_cerevisiae_imx2538_nanopore_reads:
         f"../envs/{config['env_mode']}/seqtk.yaml"
 
     shell:
-        "curl ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR155/007/SRR15597407/SRR15597407_1.fastq.gz 2> {log} | seqtk seq -A - 2>> {log} > {output} 2>> {log}"
+        "curl ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR155/007/SRR15597407/SRR15597407_1.fastq.gz 2> {log} | seqtk seq -A - 2>> {log} | seqtk rename - 2>> {log} > {output}"
 
 
 rule s_cerevisiae_imx2538_illumina_reads:
@@ -126,7 +126,7 @@ rule s_cerevisiae_imx2538_illumina_reads:
         f"../envs/{config['env_mode']}/seqtk.yaml"
 
     shell:
-        "curl ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR155/008/SRR15597408/SRR15597408_1.fastq.gz ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR155/008/SRR15597408/SRR15597408_2.fastq.gz 2> {log} | seqtk seq -A - 2>> {log} > {output} 2>> {log}"
+        "curl ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR155/008/SRR15597408/SRR15597408_1.fastq.gz ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR155/008/SRR15597408/SRR15597408_2.fastq.gz 2> {log} | seqtk seq -A - 2>> {log} | seqtk rename - 2>> {log} > {output} 2>> {log}"
 
 
 rule zymo_illumina_reads:
@@ -146,7 +146,7 @@ rule zymo_illumina_reads:
         f"../envs/{config['env_mode']}/seqtk.yaml"
 
     shell:
-        "curl ftp://ftp.sra.ebi.ac.uk/vol1/run/ERR725/ERR7255689/18100FL-15-01-05_S96_L002_R1_001.fastq.gz ftp://ftp.sra.ebi.ac.uk/vol1/run/ERR725/ERR7255689/18100FL-15-01-05_S96_L002_R2_001.fastq.gz 2> {log} | seqtk seq -A - 2>> {log} > {output} 2>> {log}"
+        "curl ftp://ftp.sra.ebi.ac.uk/vol1/run/ERR725/ERR7255689/18100FL-15-01-05_S96_L002_R1_001.fastq.gz ftp://ftp.sra.ebi.ac.uk/vol1/run/ERR725/ERR7255689/18100FL-15-01-05_S96_L002_R2_001.fastq.gz 2> {log} | seqtk seq -A - 2>> {log} | seqtk rename - 2>> {log} > {output}"
 
 
 rule zymo_pacbio_reads:
@@ -166,7 +166,7 @@ rule zymo_pacbio_reads:
         f"../envs/{config['env_mode']}/seqtk.yaml"
 
     shell:
-        "curl ftp://ftp.sra.ebi.ac.uk/vol1/run/ERR728/ERR7287988/zymo_hmw_r104.fastq.gz 2> {log} | seqtk seq -A - 2>> {log} > {output} 2>> {log}"
+        "curl ftp://ftp.sra.ebi.ac.uk/vol1/run/ERR728/ERR7287988/zymo_hmw_r104.fastq.gz 2> {log} | seqtk seq -A - 2>> {log} | seqtk rename - 2>> {log} > {output}"
 
 
 rule zymo_nanopore_reads:
@@ -186,4 +186,4 @@ rule zymo_nanopore_reads:
         f"../envs/{config['env_mode']}/seqtk.yaml"
 
     shell:
-        "curl ftp://ftp.sra.ebi.ac.uk/vol1/run/ERR728/ERR7287988/zymo_hmw_r104.fastq.gz 2> {log} | seqtk seq -A - 2>> {log} > {output} 2>> {log}"
+        "curl ftp://ftp.sra.ebi.ac.uk/vol1/run/ERR728/ERR7287988/zymo_hmw_r104.fastq.gz 2> {log} | seqtk seq -A - 2>> {log} | seqtk rename - 2>> {log} > {output}"
