@@ -46,14 +46,7 @@ rule zymo_reference:
         # nothing
 
     output:
-        "data/references/zymo/Bacillus_subtilis_complete_genome.fasta",
-        "data/references/zymo/Staphylococcus_aureus_complete_genome.fasta",
-        "data/references/zymo/Salmonella_enterica_complete_genome.fasta",
-        "data/references/zymo/Listeria_monocytogenes_complete_genome.fasta",
-        "data/references/zymo/Escherichia_coli_complete_genome.fasta",
-        "data/references/zymo/Enterococcus_faecalis_complete_genome.fasta",
-        "data/references/zymo/Pseudomonas_aeruginosa_complete_genome.fasta",
-        "data/references/zymo/Saccharomyces_cerevisiae_draft_genome.fasta",
+        "data/references/zymo.fasta",
 
     log:
         "log/data/references/zymo.txt"
@@ -69,7 +62,7 @@ rule zymo_reference:
         curl https://s3.amazonaws.com/zymo-files/BioPool/D6322.refseq.zip > zymo.zip
         unzip zymo.zip
         mkdir -p data/references/zymo
-        mv D6322.refseq/Genomes/*.fasta data/references/zymo/
+        cat D6322.refseq/Genomes/*.fasta > data/references/zymo.fasta
         rm -rf D6322.refseq
         rm zymo.zip
         """
