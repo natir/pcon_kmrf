@@ -9,8 +9,8 @@ import itertools
 def conf_range(name):
     local = config[name]
 
-    if "list" in local:
-        return local["list"]
+    if isinstance(local, list):
+        return local
 
     step = local["step"] if "step" in local else 1
 

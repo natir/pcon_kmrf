@@ -1,26 +1,89 @@
 rule pcon:
     input:
-        "data/reads/{filename}.fasta"
+        "data/{origin}/{filename}.fasta"
+
 
     output:
-        "count/pcon/reads/k{kmer_size}/{filename}.pcon"
+        "count/k{kmer_size}/{origin}/pcon/{filename}.pcon"
 
     log:
-        "log/pcon/count/reads/{filename}_k{kmer_size}.txt"
+        "log/count/k{kmer_size}/{origin}/pcon/{filename}.txt"
 
     benchmark:
-        "profile/pcon/count/reads/{filename}_k{kmer_size}.tsv"
-
-    conda:
-        f"../env/{config['env_mode']}/pcon.yaml"
+        "profile/count/k{kmer_size}/{origin}/pcon/{filename}.tsv"
 
     threads:
-        8
-        
+        config['max_threads']
+
+    # conda:
+    #     f"../env/{config['env_mode']}/pcon.yaml"
+
+    resources:
+        mem_mb = lambda wcd: pcon_memory_usage(int(wcd.kmer_size))
+
     shell:
-        "pcon count -i {input} -o {output} -k {wildcards.kmer_size} -t {threads}"
+        "pcon -vvvv -t {threads} count -i {input} -o {output} -k {wildcards.kmer_size} 2> {log}"
 
 
-all_dependency.append("count/reads/k15/k12_mg1655.pcon")
-all_dependency.append("count/reads/k15/s_cerevisiae_imx2538_nanopore.pcon")
-all_dependency.append("count/reads/k15/s_cerevisiae_imx2538_illumina.pcon")
+rule kmc:
+    input:
+        "data/{origin}/{filename}.fasta"
+
+    output:
+        "count/k{kmer_size}/{origin}/kmc/{filename}.kmc_pre",
+        "count/k{kmer_size}/{origin}/kmc/{filename}.kmc_suf",
+
+    log:
+        "log/count/k{kmer_size}/{origin}/kmc/{filename}.txt"
+
+    benchmark:
+        "profile/count/k{kmer_size}/{origin}/kmc/{filename}.tsv"
+
+    params:
+        work_dir = lambda wcd: f"tmp/k{wcd.kmer_size}/{wcd.origin}kmc/{wcd.filename}",
+        kmc_out = lambda wcd: f"count/k{wcd.kmer_size}/{wcd.origin}/kmc/{wcd.filename}"
+
+    threads:
+        config['max_threads']
+
+    conda:
+        f"../env/{config['env_mode']}/kmc.yaml"
+
+    shell:
+        """
+        mkdir -p {params.work_dir}
+        kmc -k{wildcards.kmer_size} -t{threads} -r -fa {input} {params.kmc_out} {params.work_dir} 2>&1 > {log}
+        """
+
+
+rule jellyfish:
+    input:
+        "data/{origin}/{filename}.fasta"
+
+    output:
+        "count/k{kmer_size}/{origin}/jellyfish/{filename}.jf"
+
+    log:
+        "log/count/k{kmer_size}/{origin}/jellyfish/{filename}.txt"
+
+    benchmark:
+        "profile/count/k{kmer_size}/{origin}/jellyfish/{filename}.tsv"
+
+    threads:
+        config['max_threads']
+
+    conda:
+        f"../env/{config['env_mode']}/jellyfish.yaml"
+
+    shell:
+        "jellyfish count -m{wildcards.kmer_size} -t{threads} -s10G -C -o {output} {input} 2>&1 > {log}"
+
+
+for counter, extension in conf_range("counter"):
+    for k in conf_range("kmer_size"):
+        #all_dependency.append(f"count/k{k}/reads/{counter}/k12_mg1655.{extension}")
+        all_dependency.append(f"count/k{k}/reads/{counter}/s_cerevisiae_imx2538_nanopore.{extension}")
+        all_dependency.append(f"count/k{k}/reads/{counter}/s_cerevisiae_imx2538_illumina.{extension}")
+        all_dependency.append(f"count/k{k}/reads/{counter}/zymo_illumina.{extension}")
+        all_dependency.append(f"count/k{k}/reads/{counter}/zymo_pacbio.{extension}")
+        all_dependency.append(f"count/k{k}/reads/{counter}/zymo_nanopore.{extension}")

@@ -13,10 +13,10 @@ rule k12_MG1655_reference:
 
     benchmark:
         "profile/data/references/k12_mg1655.tsv"
-        
+
     conda:
         f"../env/{config['env_mode']}/seqtk.yaml"
-        
+
     shell:
         "curl ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/005/845/GCF_000005845.2_ASM584v2/GCF_000005845.2_ASM584v2_genomic.fna.gz 2>> {log} | seqtk seq -A - 2>> {log} | sed -e 's/^\(>[^[:space:]]*\).*/\1/' > {output} 2>> {log}"
 
@@ -54,7 +54,7 @@ rule zymo_reference:
         "data/references/zymo/Enterococcus_faecalis_complete_genome.fasta",
         "data/references/zymo/Pseudomonas_aeruginosa_complete_genome.fasta",
         "data/references/zymo/Saccharomyces_cerevisiae_draft_genome.fasta",
-        
+
     log:
         "log/data/references/zymo.txt"
 
@@ -66,7 +66,7 @@ rule zymo_reference:
 
     shell:
         """
-        curl https://s3.amazonaws.com/zymo-files/BioPool/D6322.refseq.zip > zymo.zip 
+        curl https://s3.amazonaws.com/zymo-files/BioPool/D6322.refseq.zip > zymo.zip
         unzip zymo.zip
         mkdir -p data/references/zymo
         mv D6322.refseq/Genomes/*.fasta data/references/zymo/
@@ -85,10 +85,10 @@ rule k12_MG1655_reads:
 
     log:
         "log/data/reads/k12_mg1655.txt"
-        
+
     benchmark:
         "profile/data/reads/k12_mg1655.txt"
-        
+
     conda:
         f"../env/{config['env_mode']}/seqtk.yaml"
 
@@ -111,9 +111,9 @@ rule s_cerevisiae_imx2538_nanopore_reads:
 
     conda:
         f"../env/{config['env_mode']}/seqtk.yaml"
-    
+
     shell:
-        "curl https://sra-download.ncbi.nlm.nih.gov/traces/sra72/SRR/015231/SRR15597407 2> {log} | seqtk seq -A - 2>> {log} > {output} 2>> {log}"
+        "curl ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR155/007/SRR15597407/SRR15597407_1.fastq.gz 2> {log} | seqtk seq -A - 2>> {log} > {output} 2>> {log}"
 
 
 rule s_cerevisiae_imx2538_illumina_reads:
@@ -131,9 +131,9 @@ rule s_cerevisiae_imx2538_illumina_reads:
 
     conda:
         f"../env/{config['env_mode']}/seqtk.yaml"
-    
+
     shell:
-        "curl https://sra-download.ncbi.nlm.nih.gov/traces/sra52/SRR/015231/SRR15597408 2> {log} | seqtk seq -A - 2>> {log} > {output} 2>> {log}"
+        "curl ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR155/008/SRR15597408/SRR15597408_1.fastq.gz ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR155/008/SRR15597408/SRR15597408_2.fastq.gz 2> {log} | seqtk seq -A - 2>> {log} > {output} 2>> {log}"
 
 
 rule zymo_illumina_reads:

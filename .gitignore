@@ -1,3 +1,9 @@
+# snakemake related
 .snakemake/
 log/
+profiles/
+
+# other
 data/
+tmp/
+count/

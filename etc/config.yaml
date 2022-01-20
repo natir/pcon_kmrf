@@ -1,10 +1,14 @@
 # Choice of environment
 env_mode: "basic"
 
+# Max number of threads
+max_threads: 8
+
 # Range of kmer use
-kmer:
+kmer_size:
   begin: 13
-  end: 21
+  end: 19
   step: 2
 
-
+# counter enabled with extension
+counter: [["pcon", "pcon"], ["kmc", "kmc_suf"], ["jellyfish", "jf"]]
