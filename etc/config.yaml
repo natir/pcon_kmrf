@@ -18,7 +18,7 @@ kmrf_ratio:
 
 # Filter reads with quality lower than this range of quality
 filtlong_quality:
-  begin: 90
+  begin: 88
   end: 100
   step: 2
 

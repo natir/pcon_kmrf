@@ -1,0 +1,8 @@
+name: kmc
+
+channels:
+- bioconda
+- defaults
+
+dependencies:
+  - medaka = 1.5

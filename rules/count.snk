@@ -39,7 +39,7 @@ rule kmc:
         "profile/count/k{kmer_size}/{origin}/kmc/{filename}.tsv"
 
     params:
-        work_dir = lambda wcd: f"tmp/k{wcd.kmer_size}/{wcd.origin}kmc/{wcd.filename}",
+        work_dir = lambda wcd: f"tmp/k{wcd.kmer_size}/{wcd.origin}/kmc/{wcd.filename}",
         kmc_out = lambda wcd: f"count/k{wcd.kmer_size}/{wcd.origin}/kmc/{wcd.filename}"
 
     threads:
