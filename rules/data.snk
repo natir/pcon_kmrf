@@ -62,7 +62,7 @@ rule zymo_reference:
         curl https://s3.amazonaws.com/zymo-files/BioPool/D6322.refseq.zip > zymo.zip 2> {log}
         unzip zymo.zip &>> {log}
         mkdir -p data/references/zymo &>> {log}
-        seqtk seq -A - D6322.refseq/Genomes/*.fasta > data/references/zymo.fasta 2>> {log}
+        seqtk seq -A D6322.refseq/Genomes/*.fasta > data/references/zymo.fasta 2>> {log}
         rm -rf D6322.refseq 2>> {log}
         rm zymo.zip 2>> {log}
         """

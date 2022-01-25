@@ -10,7 +10,7 @@
 ```
 cargo install --git https://github.com/natir/pcon --force
 cargo install --git https://github.com/natir/br --force
-cargo install --git https://github.com/natir/kmerf --force
+cargo install --git https://github.com/natir/kmrf --force
 
 cp etc/config.example.yaml etc/config.yaml
 # edit etc/config.yaml to set your parameter
