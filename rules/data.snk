@@ -21,24 +21,30 @@ rule k12_MG1655_reference:
         "curl ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/005/845/GCF_000005845.2_ASM584v2/GCF_000005845.2_ASM584v2_genomic.fna.gz 2>> {log} | seqtk seq -A - 2>> {log} | sed -e 's/^\(>[^[:space:]]*\).*/\1/' > {output} 2>> {log}"
 
 
-rule s_cerevisiae_imx2538_reference:
+rule s_cerevisiae_s288C_reference:
     input:
         # nothing
 
     output:
-        "data/references/s_cerevisiae_imx2538.fasta"
+        "data/references/s_cerevisiae_s288c.fasta"
 
     log:
-        "log/data/references/s_cerevisiae_imx2538.txt"
+        "log/data/references/s_cerevisiae_s288c.txt"
 
     benchmark:
-        "profile/data/references/s_cerevisiae_imx2538.tsv"
+        "profile/data/references/s_cerevisiae_s288c.tsv"
 
     conda:
         f"../envs/{config['env_mode']}/seqtk.yaml"
 
     shell:
-        "touch {output}"
+        """
+        curl http://sgd-archive.yeastgenome.org/sequence/S288C_reference/genome_releases/S288C_reference_genome_Current_Release.tgz > s_cerevisiae.tgz 2> {log}
+        tar xvfz s_cerevisiae.tgz &>> {log}
+        seqtk seq -A S288C_reference_genome_R64-3-1_20210421/S288C_reference_sequence_R64-3-1_20210421.fsa.gz > {output} 2>> {log}
+        rm -rf S288C_reference_genome_R64-3-1_20210421 2>> {log}
+        rm s_cerevisiae.tgz 2>> {log}
+        """
 
 
 rule zymo_reference:
@@ -61,8 +67,7 @@ rule zymo_reference:
         """
         curl https://s3.amazonaws.com/zymo-files/BioPool/D6322.refseq.zip > zymo.zip 2> {log}
         unzip zymo.zip &>> {log}
-        mkdir -p data/references/zymo &>> {log}
-        seqtk seq -A D6322.refseq/Genomes/*.fasta > data/references/zymo.fasta 2>> {log}
+        seqtk seq -A D6322.refseq/Genomes/*.fasta > {output} 2>> {log}
         rm -rf D6322.refseq 2>> {log}
         rm zymo.zip 2>> {log}
         """

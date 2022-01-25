@@ -34,6 +34,7 @@ reads2ref:
 # Associate reference with genome size
 ref2size:
   zymo: 41884608
+  s_cerevisiae_s288c: 12157105
 
 # counter enabled with extension
 counter: [["pcon", "pcon"], ["kmc", "kmc_suf"], ["jellyfish", "jf"]]
