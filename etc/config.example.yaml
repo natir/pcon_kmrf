@@ -35,7 +35,7 @@ reads2ref:
 ref2size:
   zymo: 41884608
   s_cerevisiae_s288c: 12157105
-  k12_mg1655: :4641652
+  k12_mg1655: 4641652
 
 # counter enabled with extension
 counter: [["pcon", "pcon"], ["kmc", "kmc_suf"], ["jellyfish", "jf"]]
