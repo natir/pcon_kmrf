@@ -48,7 +48,7 @@ rule medaka_raw:
         "medaka_consensus -t {threads} -i {input.reads} -d {input.ref} -o {output} -m r941_min_high_g303"
 
 
-#all_dependency.append(f"genotyping/medaka/raw/k12_mg1655-k{kmer_size}-r{ratio}.vcf")
+all_dependency.append(f"genotyping/medaka/raw/k12_mg1655.vcf")
 all_dependency.append(f"genotyping/medaka/raw/s_cerevisiae_imx2538_nanopore.vcf")
 all_dependency.append(f"genotyping/medaka/raw/s_cerevisiae_imx2538_illumina.vcf")
 all_dependency.append(f"genotyping/medaka/raw/zymo_pacbio.vcf")
@@ -57,7 +57,7 @@ all_dependency.append(f"genotyping/medaka/raw/zymo_nanopore.vcf")
 
 for kmer_size in conf_range("kmer_size"):
     for ratio in conf_range("kmrf_ratio"):
-        #all_dependency.append(f"genotyping/medaka/kmrf/k12_mg1655-k{kmer_size}-r{ratio}.vcf")
+        all_dependency.append(f"genotyping/medaka/kmrf/k12_mg1655-k{kmer_size}-r{ratio}.vcf")
         all_dependency.append(f"genotyping/medaka/kmrf/s_cerevisiae_imx2538_illumina-k{kmer_size}-r{ratio}.vcf")
         all_dependency.append(f"genotyping/medaka/kmrf/s_cerevisiae_imx2538_nanopore-k{kmer_size}-r{ratio}.vcf")
         all_dependency.append(f"genotyping/medaka/kmrf/zymo_pacbio-k{kmer_size}-r{ratio}.vcf")
@@ -65,7 +65,7 @@ for kmer_size in conf_range("kmer_size"):
 
 
 for quality in conf_range("filtlong_quality"):
-    #all_dependency.append(f"genotyping/medaka/filtlong/k12_mg1655-q{quality}.vcf")
+    all_dependency.append(f"genotyping/medaka/filtlong/k12_mg1655-q{quality}.vcf")
     all_dependency.append(f"genotyping/medaka/filtlong/s_cerevisiae_imx2538_nanopore-q{quality}.vcf")
     all_dependency.append(f"genotyping/medaka/filtlong/s_cerevisiae_imx2538_illumina-q{quality}.vcf")
     all_dependency.append(f"genotyping/medaka/filtlong/zymo_pacbio-q{quality}.vcf")

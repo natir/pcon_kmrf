@@ -80,7 +80,7 @@ rule jellyfish:
 
 for counter, extension in conf_range("counter"):
     for k in conf_range("kmer_size"):
-        #all_dependency.append(f"count/k{k}/reads/{counter}/k12_mg1655.{extension}")
+        all_dependency.append(f"count/k{k}/reads/{counter}/k12_mg1655.{extension}")
         all_dependency.append(f"count/k{k}/reads/{counter}/s_cerevisiae_imx2538_nanopore.{extension}")
         all_dependency.append(f"count/k{k}/reads/{counter}/s_cerevisiae_imx2538_illumina.{extension}")
         all_dependency.append(f"count/k{k}/reads/{counter}/zymo_illumina.{extension}")

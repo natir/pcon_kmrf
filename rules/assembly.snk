@@ -106,7 +106,7 @@ rule quast_assembly:
 
 for kmer_size in conf_range("kmer_size"):
     for ratio in conf_range("kmrf_ratio"):
-        #all_dependency.append(f"assembly/quast/kmrf/k12_mg1655-k{kmer_size}-r{ratio}/report.txt")
+        all_dependency.append(f"assembly/quast/kmrf/k12_mg1655-k{kmer_size}-r{ratio}/report.txt")
         all_dependency.append(f"assembly/quast/kmrf/s_cerevisiae_imx2538_nanopore-k{kmer_size}-r{ratio}/report.txt")
         all_dependency.append(f"assembly/quast/kmrf/s_cerevisiae_imx2538_illumina-k{kmer_size}-r{ratio}/report.txt")
         all_dependency.append(f"assembly/quast/kmrf/zymo_pacbio-k{kmer_size}-r{ratio}/report.txt")
@@ -114,7 +114,7 @@ for kmer_size in conf_range("kmer_size"):
 
 
 for quality in conf_range("filtlong_quality"):
-    #all_dependency.append(f"assembly/quast/filtlong/k12_mg1655-q{quality}/report.txt")
+    all_dependency.append(f"assembly/quast/filtlong/k12_mg1655-q{quality}/report.txt")
     all_dependency.append(f"assembly/quast/filtlong/s_cerevisiae_imx2538_nanopore-q{quality}/report.txt")
     all_dependency.append(f"assembly/quast/filtlong/s_cerevisiae_imx2538_illumina-q{quality}/report.txt")
     all_dependency.append(f"assembly/quast/filtlong/zymo_pacbio-q{quality}/report.txt")

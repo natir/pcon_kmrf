@@ -18,7 +18,7 @@ rule k12_MG1655_reference:
         f"../envs/{config['env_mode']}/seqtk.yaml"
 
     shell:
-        "curl ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/005/845/GCF_000005845.2_ASM584v2/GCF_000005845.2_ASM584v2_genomic.fna.gz 2>> {log} | seqtk seq -A - 2>> {log} | sed -e 's/^\(>[^[:space:]]*\).*/\1/' > {output} 2>> {log}"
+        "curl ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/005/845/GCF_000005845.2_ASM584v2/GCF_000005845.2_ASM584v2_genomic.fna.gz 2>> {log} | seqtk seq -A - 2>> {log} > {output}"
 
 
 rule s_cerevisiae_s288C_reference:
@@ -76,7 +76,7 @@ rule zymo_reference:
 # reads
 rule k12_MG1655_reads:
     input:
-        # nothing
+        "data/references/k12_mg1655.fasta"
 
     output:
         "data/reads/k12_mg1655.fasta",
@@ -88,10 +88,10 @@ rule k12_MG1655_reads:
         "profile/data/reads/k12_mg1655.txt"
 
     conda:
-        f"../envs/{config['env_mode']}/seqtk.yaml"
+        f"../envs/{config['env_mode']}/badreads.yaml"
 
     shell:
-        "touch {output}"
+         "./scripts/multi-thread-badread.sh 50x {threads} {input} 95 {output} 2>&1 > {log}"
 
 
 rule s_cerevisiae_imx2538_nanopore_reads:
