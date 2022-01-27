@@ -8,6 +8,9 @@ rule medaka:
     output:
         "genotyping/medaka/{filter}/{dataset}-{params}/consensus.fasta",
 
+    params:
+        output = "genotyping/medaka/raw/{dataset}/",
+
     log:
         "log/genotyping/medaka/{filter}/{dataset}-{params}.txt",
 
@@ -21,7 +24,7 @@ rule medaka:
         f"../envs/{config['env_mode']}/medaka.yaml"
 
     shell:
-        "medaka_consensus -t {threads} -i {input.reads} -d {input.ref} -o {output} -m r941_min_high_g303"
+        "medaka_consensus -t {threads} -i {input.reads} -d {input.ref} -o {params.output} -m r941_min_high_g303"
 
 
 rule medaka_raw:
@@ -31,6 +34,9 @@ rule medaka_raw:
 
     output:
         "genotyping/medaka/raw/{dataset}/consensus.fasta",
+
+    params:
+        output = "genotyping/medaka/raw/{dataset}/",
 
     log:
         "log/genotyping/medaka/raw/{dataset}.txt",
@@ -45,7 +51,7 @@ rule medaka_raw:
         f"../envs/{config['env_mode']}/medaka.yaml"
 
     shell:
-        "medaka_consensus -t {threads} -i {input.reads} -d {input.ref} -o {output} -m r941_min_high_g303"
+        "medaka_consensus -t {threads} -i {input.reads} -d {input.ref} -o {params.output} -m r941_min_high_g303"
 
 
 all_dependency.append(f"genotyping/medaka/raw/k12_mg1655/consensus.fasta")
