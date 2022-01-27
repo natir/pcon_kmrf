@@ -91,7 +91,7 @@ rule k12_MG1655_reads:
         f"../envs/{config['env_mode']}/badreads.yaml"
 
     shell:
-         "./scripts/multi-thread-badread.sh 50x {threads} {input} 95 {output} 2>&1 > {log}"
+         "./scripts/multi-thread-badread.sh 50 {threads} {input} 95 {output} &> {log}"
 
 
 rule s_cerevisiae_imx2538_nanopore_reads:
