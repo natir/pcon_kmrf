@@ -24,7 +24,7 @@ rule medaka:
         f"../envs/{config['env_mode']}/medaka.yaml"
 
     shell:
-        "medaka_consensus -t {threads} -i {input.reads} -d {input.ref} -o {params.output} -m r941_min_high_g303"
+        "medaka_haploid_variant -t {threads} -i {input.reads} -r {input.ref} -o {params.output} -m r941_min_hac_variant_g507"
 
 
 rule medaka_raw:
@@ -51,7 +51,7 @@ rule medaka_raw:
         f"../envs/{config['env_mode']}/medaka.yaml"
 
     shell:
-        "medaka_consensus -t {threads} -i {input.reads} -d {input.ref} -o {params.output} -m r941_min_high_g303"
+        "medaka_haploid_variant -t {threads} -i {input.reads} -r {input.ref} -o {params.output} -m r941_min_hac_variant_g507"
 
 
 all_dependency.append(f"genotyping/medaka/raw/k12_mg1655/consensus.fasta")
