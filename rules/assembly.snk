@@ -52,7 +52,7 @@ rule filtlong:
 
 rule readbean:
     input:
-        "assembly/{filter}/{dataset}-{params}.fasta",
+         "assembly/{filter}/{dataset}-{params}.fasta",
 
     output:
         "assembly/redbean/{filter}_{dataset}-{params}/dbg.raw.fa",
@@ -65,6 +65,36 @@ rule readbean:
 
     params:
         prefix = "assembly/redbean/{filter}_{dataset}-{params}/dbg",
+        genome_size = lambda wcd: config['ref2size'][config['reads2ref'][wcd.dataset]],
+
+    threads:
+        config['max_threads']
+
+    conda:
+        f"../envs/{config['env_mode']}/redbean.yaml"
+
+    shell:
+        """
+        wtdbg2 -x ont -g {params.genome_size} -i {input} -t {threads} -fo {params.prefix} &>  {log}
+        wtpoa-cns -t {threads} -i {params.prefix}.ctg.lay.gz -fo {output} &>> {log}
+        """
+
+
+rule readbean_raw:
+    input:
+        "data/reads/{dataset}.fasta",
+
+    output:
+        "assembly/redbean/raw_{dataset}-raw/dbg.raw.fa",
+
+    log:
+        "log/assembly/readbean/raw_{dataset}-raw.txt",
+
+    benchmark:
+        "profile/assembly/readbean/raw_{dataset}-raw.tsv",
+
+    params:
+        prefix = "assembly/redbean/raw_{dataset}-raw/dbg",
         genome_size = lambda wcd: config['ref2size'][config['reads2ref'][wcd.dataset]],
 
     threads:
@@ -102,6 +132,13 @@ rule quast_assembly:
 
     shell:
         "quast --min-identity 80 -t {threads} -o {params.prefix} -r {input.ref} {input.asm} &> {log}"
+
+
+all_dependency.append(f"assembly/quast/raw/k12_mg1655-raw/report.txt")
+all_dependency.append(f"assembly/quast/raw/s_cerevisiae_imx2538_nanopore-raw/report.txt")
+all_dependency.append(f"assembly/quast/raw/s_cerevisiae_imx2538_illumina-raw/report.txt")
+all_dependency.append(f"assembly/quast/raw/zymo_pacbio-raw/report.txt")
+all_dependency.append(f"assembly/quast/raw/zymo_nanopore-raw/report.txt")
 
 
 for kmer_size in conf_range("kmer_size"):
